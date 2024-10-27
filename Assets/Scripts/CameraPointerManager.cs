@@ -6,14 +6,13 @@ public class CameraPointerManager : MonoBehaviour
 {
     public static CameraPointerManager Instance;
     [SerializeField] private GameObject pointer;
-    [SerializeField] private float maxDistancePointer = 4.5f;
     [Range(0,1)]
     [SerializeField] private float disPointerObject = 0.95f;
     private const float _maxDistance = 10;
     private GameObject _gazedAtObject = null;
 
     private readonly string interactableTag = "Interactable";
-    private float scaleSize = 0.025f;
+    private float scaleSize = 0.02f;
     [HideInInspector]
     public Vector3 hitPoint;
 
@@ -63,14 +62,16 @@ public class CameraPointerManager : MonoBehaviour
             }
             else
             {
-                PointerOutGaze();
+                PointerOutGaze(hit.point);
             }
         }
         else
         {
             // No GameObject detected in front of the camera.
+            Vector3 defaultPointerPosition = transform.position + transform.forward * _maxDistance;
             _gazedAtObject?.SendMessage("OnPointerExitXR", null, SendMessageOptions.DontRequireReceiver);
             _gazedAtObject = null;
+            PointerOutGaze(defaultPointerPosition);
         }
 
         // Checks for screen touches.
@@ -92,11 +93,21 @@ public class CameraPointerManager : MonoBehaviour
 
     }
 
-    private void PointerOutGaze()
+    private void PointerOutGaze(Vector3 targetPosition)
     {
-        pointer.transform.localScale = Vector3.one * 0.1f;
-        pointer.transform.parent.transform.localPosition = new Vector3(0, 0, maxDistancePointer);
-        pointer.transform.parent.parent.transform.rotation = transform.rotation;
+        // Posiciona el puntero en una posición intermedia entre la cámara y el punto proporcionado.
+        float distanceBetween = Vector3.Distance(transform.position, targetPosition);
+        Vector3 pointerPosition = CalculatePointerPosition(transform.position, targetPosition, disPointerObject);
+
+        // Ajustar el tamaño del puntero según la distancia.
+        float scaleFactor = scaleSize * distanceBetween;
+        pointer.transform.localScale = Vector3.one * scaleFactor;
+
+        // Aplicar la posición y orientación del puntero.
+        pointer.transform.parent.position = pointerPosition;
+        pointer.transform.parent.parent.rotation = transform.rotation;
+
+        // Cancelar la selección de mirada si no hay un objeto mirado.
         GazeManager.Instance.CancelGazeSelection();
     }
 

@@ -346,6 +346,11 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 2896954701755593260, guid: a0b70cf0b734be2459637be798efccf7,
+        type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
     - target: {fileID: 3239290810831959889, guid: a0b70cf0b734be2459637be798efccf7,
         type: 3}
       propertyPath: m_Layer
@@ -395,6 +400,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4176755953458895791, guid: a0b70cf0b734be2459637be798efccf7,
+        type: 3}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 4958291876138394657, guid: a0b70cf0b734be2459637be798efccf7,
         type: 3}
@@ -504,7 +514,7 @@ PrefabInstance:
     - target: {fileID: 8823200022218951511, guid: a0b70cf0b734be2459637be798efccf7,
         type: 3}
       propertyPath: m_TagString
-      value: Interactable
+      value: Untagged
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2385,8 +2395,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pointer: {fileID: 341301443}
-  maxDistancePointer: 10
-  disPointerObject: 0.502
+  disPointerObject: 0.95
   hitPoint: {x: 0, y: 0, z: 0}
 --- !u!1 &1037620226
 GameObject:
