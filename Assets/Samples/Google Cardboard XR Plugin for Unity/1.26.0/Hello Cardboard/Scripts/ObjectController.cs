@@ -27,58 +27,61 @@ public class ObjectController : MonoBehaviour
     /// <summary>
     /// The material to use when this object is inactive (not being gazed at).
     /// </summary>
-    public Material InactiveMaterial;
-
-    /// <summary>
-    /// The material to use when this object is active (gazed at).
-    /// </summary>
-    public Material GazedAtMaterial;
-
-    // The objects are about 1 meter in radius, so the min/max target distance are
-    // set so that the objects are always within the room (which is about 5 meters
-    // across).
-    private const float _minObjectDistance = 2.5f;
-    private const float _maxObjectDistance = 3.5f;
-    private const float _minObjectHeight = 0.5f;
-    private const float _maxObjectHeight = 3.5f;
-
+    private Material[] _originalMaterials; // Store the original materials
     private Renderer _myRenderer;
-    private Vector3 _startingPosition;
+    private Color _originalColor;
 
     /// <summary>
     /// Start is called before the first frame update.
     /// </summary>
     public void Start()
     {
-        _startingPosition = transform.parent.localPosition;
         _myRenderer = GetComponent<Renderer>();
+
+        // Store the original color of the material.
+        if (_myRenderer != null)
+        {
+            // Clone the original materials to preserve their initial state
+            _originalMaterials = new Material[_myRenderer.materials.Length];
+            for (int i = 0; i < _myRenderer.materials.Length; i++)
+            {
+                _originalMaterials[i] = new Material(_myRenderer.materials[i]); // Create a new instance to keep original properties
+            }
+        }
+
         SetMaterial(false);
     }
 
     /// <summary>
-    /// Teleports this instance randomly when triggered by a pointer click.
+    /// Sets this instance's material or color according to gazedAt status.
     /// </summary>
-    public void TeleportRandomly()
+    /// <param name="gazedAt">
+    /// Value `true` if this object is being gazed at, `false` otherwise.
+    /// </param>
+    private void SetMaterial(bool gazedAt)
     {
-        // Picks a random sibling, activates it and deactivates itself.
-        int sibIdx = transform.GetSiblingIndex();
-        int numSibs = transform.parent.childCount;
-        sibIdx = (sibIdx + Random.Range(1, numSibs)) % numSibs;
-        GameObject randomSib = transform.parent.GetChild(sibIdx).gameObject;
+        if (_myRenderer != null)
+        {
+            if (gazedAt)
+            {
+                // Set all materials' color to green
+                foreach (Material material in _myRenderer.materials)
+                {
+                    material.color = Color.green;
+                }
+            }
+            else
+            {
+                // Restore the original materials
+                _myRenderer.materials = _originalMaterials;
+            }
+        }
+    }
 
-        // Computes new object's location.
-        float angle = Random.Range(-Mathf.PI, Mathf.PI);
-        float distance = Random.Range(_minObjectDistance, _maxObjectDistance);
-        float height = Random.Range(_minObjectHeight, _maxObjectHeight);
-        Vector3 newPos = new Vector3(Mathf.Cos(angle) * distance, height,
-                                     Mathf.Sin(angle) * distance);
 
-        // Moves the parent to the new position (siblings relative distance from their parent is 0).
-        transform.parent.localPosition = newPos;
-
-        randomSib.SetActive(true);
+    public void DisableObject()
+    {
         gameObject.SetActive(false);
-        SetMaterial(false);
     }
 
     /// <summary>
@@ -103,21 +106,6 @@ public class ObjectController : MonoBehaviour
     /// </summary>
     public void OnPointerClickXR()
     {
-        TeleportRandomly();
-    }
-
-    /// <summary>
-    /// Sets this instance's material according to gazedAt status.
-    /// </summary>
-    ///
-    /// <param name="gazedAt">
-    /// Value `true` if this object is being gazed at, `false` otherwise.
-    /// </param>
-    private void SetMaterial(bool gazedAt)
-    {
-        if (InactiveMaterial != null && GazedAtMaterial != null)
-        {
-            _myRenderer.material = gazedAt ? GazedAtMaterial : InactiveMaterial;
-        }
+        DisableObject();
     }
 }

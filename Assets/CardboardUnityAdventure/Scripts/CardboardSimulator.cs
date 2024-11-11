@@ -1,7 +1,6 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class CardboardSimulator : MonoBehaviour
 {
@@ -13,7 +12,9 @@ public class CardboardSimulator : MonoBehaviour
     [SerializeField] private float rotationY = 0.0f;
     private Camera cam;
 
-    void Start() 
+    private Vector2 mouseDelta; // Stores mouse movement deltas
+
+    void Start()
     {
 #if UNITY_EDITOR
         cam = Camera.main;
@@ -25,10 +26,13 @@ public class CardboardSimulator : MonoBehaviour
 #if UNITY_EDITOR
         if (!UseCardboardSimulator)
             return;
-        if (Input.GetMouseButton(0))
+
+        if (Mouse.current.leftButton.isPressed) // New Input System for mouse button
         {
-            float mouseX = Input.GetAxis("Mouse X") * horizontalSpeed;
-            float mouseY = Input.GetAxis("Mouse Y") * verticalSpeed; 
+            mouseDelta = Mouse.current.delta.ReadValue(); // Get mouse delta values
+            float mouseX = mouseDelta.x * horizontalSpeed * Time.deltaTime;
+            float mouseY = mouseDelta.y * verticalSpeed * Time.deltaTime;
+
             rotationY += mouseX;
             rotationX -= mouseY;
             rotationX = Mathf.Clamp(rotationX, -45, 45);
@@ -42,5 +46,4 @@ public class CardboardSimulator : MonoBehaviour
         rotationX = 0;
         rotationY = cam.transform.localEulerAngles.y;
     }
-
 }
