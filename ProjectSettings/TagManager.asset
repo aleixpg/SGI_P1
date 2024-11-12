@@ -42,3 +42,6 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: UISort
+    uniqueID: 2361351069
+    locked: 0
