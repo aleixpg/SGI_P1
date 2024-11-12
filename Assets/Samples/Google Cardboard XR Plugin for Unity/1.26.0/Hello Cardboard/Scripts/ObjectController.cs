@@ -30,6 +30,8 @@ public class ObjectController : MonoBehaviour
     private Material[] _originalMaterials; // Store the original materials
     private Renderer _myRenderer;
     private Color _originalColor;
+    
+    [SerializeField] private CarMenuController carMenuController; // Asigna el CarMenuController aquí
 
     /// <summary>
     /// Start is called before the first frame update.
@@ -106,6 +108,7 @@ public class ObjectController : MonoBehaviour
     /// </summary>
     public void OnPointerClickXR()
     {
-        DisableObject();
+        //DisableObject();
+        carMenuController.ShowMenu(gameObject);
     }
 }

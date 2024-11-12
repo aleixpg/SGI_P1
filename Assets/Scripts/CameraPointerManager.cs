@@ -16,6 +16,8 @@ public class CameraPointerManager : MonoBehaviour
     [HideInInspector]
     public Vector3 hitPoint;
 
+    
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -34,7 +36,8 @@ public class CameraPointerManager : MonoBehaviour
 
     private void OnGazeSelection()
     {
-        _gazedAtObject?.SendMessage("OnPointerClickXR", null, SendMessageOptions.DontRequireReceiver);
+        
+       _gazedAtObject?.SendMessage("OnPointerClickXR", null, SendMessageOptions.DontRequireReceiver);
     }
     /// <summary>
     /// Update is called once per frame.
